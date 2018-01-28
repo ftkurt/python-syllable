@@ -4,5 +4,3 @@ pytest
 hypothesis
 toolz
 mypy
-pickle
-string
