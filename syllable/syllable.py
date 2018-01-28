@@ -131,6 +131,6 @@ class Encoder:
             pickle.dump(self.vocab, handle, protocol=pickle.HIGHEST_PROTOCOL)
             
     def load_vec(self, path="./"):
-        with open(path+self.lang 'rb') as handle:
+        with open(path+self.lang, 'rb') as handle:
             self.vocab = pickle.load(handle)
             self.process_vocab()
