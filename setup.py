@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('requirements.txt') as infile:
     dependencies = [line.strip() for line in infile if len(line) > 0]
@@ -12,7 +12,7 @@ setup(name='syllable',
       author='Fatih Kurt',
       author_email='ftkurt@gmail.com',
       license='MIT',
-      packages=['vectors'],
+      packages=find_packages(),
       package_data={'': ['*.vec']},
       setup_requires=['pytest-runner'],
       tests_require=['pytest', 'hypothesis'],
