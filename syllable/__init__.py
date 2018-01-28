@@ -1,2 +1,2 @@
 
-from .encoder import Encoder
+from .syllable import Encoder
