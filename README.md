@@ -1,7 +1,7 @@
 
 # Syllable Encoder for Text
 
-AKA Byte Pair Encoding.  Learns a vocab and byte pair encoding for provided white-space separated text.
+Decodes syllables inside a word. Applies vocabulary limit to low-frequency syllables. Can learn sylable frequencies from scratch.
 
 This syllable encoder currently supports Turkish only.
 
