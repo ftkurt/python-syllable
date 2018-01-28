@@ -33,7 +33,7 @@ class Encoder:
         for c in ["A","E","I","İ","O","Ö","U","Ü"]:
             if c.lower() not in self.vovels:
                 self.vovels.append(c.lower())
-        self.load_vec("syllable.vectors.")
+        self.load_vec("syllable.syllable.vectors.")
         
     def is_vovel(self, c):
         return c.lower() in self.vovels
