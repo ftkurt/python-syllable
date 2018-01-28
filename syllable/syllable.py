@@ -127,10 +127,10 @@ class Encoder:
             running_sum += s[1]["count"]
     
     def save_vec(self, path="./"):
-        with open(path+self.lang+'.syllable.vec', 'wb') as handle:
+        with open(path+self.lang, 'wb') as handle:
             pickle.dump(self.vocab, handle, protocol=pickle.HIGHEST_PROTOCOL)
             
     def load_vec(self, path="./"):
-        with open(path+self.lang+'.syllable.vec', 'rb') as handle:
+        with open(path+self.lang 'rb') as handle:
             self.vocab = pickle.load(handle)
             self.process_vocab()
