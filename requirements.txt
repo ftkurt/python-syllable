@@ -2,4 +2,3 @@ nltk
 pytest
 hypothesis
 mypy
-pickle
