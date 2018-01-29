@@ -4,7 +4,7 @@ from collections import Counter
 
 try:
     from typing import Dict, Iterable, Callable, List, Any, Iterator
-    import string, pickle, os, pkg_resources
+    import string, pickle, os, pkg_resources, unidecode
 except ImportError:
     pass
 
@@ -26,14 +26,11 @@ class Encoder:
         if self.lang not in supported_languages:
             raise Exception('Language not supported: '+lang)
         
-        self.vovels = ["a","e","ı","i","o","ö","u","ü"]
-        for c in ["A","E","I","İ","O","Ö","U","Ü"]:
-            if c.lower() not in self.vovels:
-                self.vovels.append(c.lower())
+        self.vovels = ["a","e","i","o","u","A","E","I","O","U"]
         self.load_package_vec()
         
     def is_vovel(self, c):
-        return c.lower() in self.vovels
+        return unidecode.unidecode(c) in self.vovels
     
     def char_is_special(self, c):
         return c in string.punctuation
