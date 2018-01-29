@@ -4,12 +4,9 @@ from collections import Counter
 
 try:
     from typing import Dict, Iterable, Callable, List, Any, Iterator
-    import string
-    import pickle
+    import string, pickle, os, pkg_resources
 except ImportError:
     pass
-
-
 
 supported_languages = ["tr"]
 
@@ -33,7 +30,7 @@ class Encoder:
         for c in ["A","E","I","İ","O","Ö","U","Ü"]:
             if c.lower() not in self.vovels:
                 self.vovels.append(c.lower())
-        self.load_vec("syllable.vectors.")
+        self.load_package_vec()
         
     def is_vovel(self, c):
         return c.lower() in self.vovels
@@ -134,3 +131,7 @@ class Encoder:
         with open(path+self.lang, 'rb') as handle:
             self.vocab = pickle.load(handle)
             self.process_vocab()
+
+    def load_package_vec(self):
+        s = pkg_resources.resource_string("syllable",os.path.join("vectors",self.lang))
+        self.vocab = pickle.loads(s)
