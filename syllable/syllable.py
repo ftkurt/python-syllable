@@ -25,6 +25,8 @@ class Encoder:
         self.limit = limit
         self.special_chars = {}
         self.unicode_char_mapping = {}
+        self.sorted_vocab = []
+        self.decode_cache = {}
         if self.lang not in supported_languages:
             raise Exception('Language not supported: '+lang)
         
@@ -49,7 +51,7 @@ class Encoder:
         return False
     
     def char_is_special(self, c):
-        return c in string.punctuation or c in self.special_chars
+        return c in self.special_chars or unidecode.unidecode(c) not in string.ascii_letters
     
     def has_vowel(self, text):
         for c in text:
@@ -104,10 +106,14 @@ class Encoder:
             yield word[last_ind:]
     
     def decode(self, text):
-        words = text.split()
+        words = text.replace("İ","i").lower().split()
         for w in words:
             try:
-                yield list(self.decode_word(w))
+                if w in self.decode_cache:
+                    yield self.decode_cache[w]
+                else:
+                    self.decode_cache[w] = [s for s in self.decode_word(w) if self.should_return_syllable(s)]
+                    yield self.decode_cache[w]
             except:
                 print("Error with word: "+w)
             
@@ -125,13 +131,15 @@ class Encoder:
         self.save_vec()
     
     def process_vocab(self):
-        sorted_vocab = sorted(self.vocab.items(), key=lambda x: x[1]["count"], reverse=True)
+        self.sorted_vocab.clear()
+        for l in sorted(self.vocab.items(), key=lambda x: x[1]["count"], reverse=True):
+            self.sorted_vocab.append(l) 
         total = 0
-        for s in sorted_vocab:
+        for s in self.sorted_vocab:
             total += s[1]["count"]
         running_sum = 0
         rank = 1
-        for s in sorted_vocab:
+        for s in self.sorted_vocab:
             s[1]["percentile"] = running_sum/total
             s[1]["rank"] = rank
             rank += 1
@@ -149,3 +157,29 @@ class Encoder:
     def load_package_vec(self):
         s = pkg_resources.resource_string("syllable",os.path.join("vectors",self.lang))
         self.vocab = pickle.loads(s)
+        self.process_vocab()
+
+    def tokenize(self, text):
+        words = []
+        for ws in self.decode(text):
+            words.append(" ".join(ws))
+        return " ".join(words)
+
+    def get_id(self, syllable):
+        if syllable not in self.vocab:
+            self.vocab[syllable] = {"percentile":100,"rank":len(self.vocab)+1,"count":0}
+            self.sorted_vocab.append((syllable,self.vocab[syllable]))
+        return self.vocab[syllable]["rank"]
+
+    def transform(self, text):
+        ids = []
+        for ws in self.decode(text):
+            for s in ws:
+                ids.append(self.get_id(s))
+        return ids
+
+    def inverse_transform(self, ids):
+        syllables = []
+        for id_ in ids:
+            syllables.append(self.sorted_vocab[id_-1][0])
+        return " ".join(syllables)
