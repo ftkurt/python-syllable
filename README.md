@@ -1,5 +1,5 @@
 
-# Syllable Encoder for Text
+# Syllable Encoder
 
 Decodes syllables inside a word. Applies vocabulary limit to low-frequency syllables. Can learn sylable frequencies from scratch.
 
